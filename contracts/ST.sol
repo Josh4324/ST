@@ -23,12 +23,14 @@
 
 pragma solidity ^0.8.19;
 
+import "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
+
 /**
  * @title A Standing Order Contract
  * @author Joshua Adesanya
  * @notice This contract is for creating a standing order to automatate sending crypto to other addresses .
  */
-contract ST {
+contract ST is AutomationCompatibleInterface {
     // Errors
     error Order__NotOwner();
 
@@ -78,9 +80,35 @@ contract ST {
         uint256 dolp,
         uint256 interval,
         address recipient
-    ) external {
+    ) external payable {
         idToOrder[odcount] = Order(odcount, name, dofp, dolp, interval, amount, recipient, false, msg.sender);
         emit orderCreated(odcount, name);
         odcount++;
+    }
+
+    function checkUpkeep(bytes memory /* checkData */ )
+        public
+        view
+        override
+        returns (bool upkeepNeeded, bytes memory /* performData */ )
+    {
+        return (upkeepNeeded, "0x0"); // can we comment this out?
+    }
+
+    function performUpkeep(bytes calldata /* performData */ ) external override {
+        (bool upkeepNeeded,) = checkUpkeep("");
+        // require(upkeepNeeded, "Upkeep not needed");
+    }
+
+    // Function to receive Ether. msg.data must be empty
+    receive() external payable {}
+
+    // Fallback function is called when msg.data is not empty
+    fallback() external payable {}
+
+    // Public Functions
+
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
     }
 }
