@@ -86,6 +86,10 @@ contract ST is AutomationCompatibleInterface {
         odcount++;
     }
 
+    function pauseOrder() public {}
+
+    function cancelOrder() public {}
+
     function checkUpkeep(bytes memory /* checkData */ )
         public
         view
