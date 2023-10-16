@@ -24,15 +24,42 @@ describe("ST", function () {
   describe("ST", function () {
     it("Test 1", async function () {
       const { st, user1 } = await loadFixture(deploy);
-      const dofp = Math.floor(new Date("2023-10-15").getTime() / 1000);
-      const dolp = Math.floor(new Date("2023-10-30").getTime() / 1000);
+      const t1 = (await time.latest()) + 1 * 24 * 60 * 60;
+      const t2 = (await time.latest()) + 10 * 24 * 60 * 60;
 
-      await st.createOrder("ST", 20, dofp, dolp, 1, user1.address, {
+      const t3 = await time.latest();
+      const t4 = (await time.latest()) + 10 * 24 * 60 * 60;
+      const it = 1 * 60;
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      /*  await st.createOrder("Or1", 20, t1, t2, 60, user1.address, {
         value: ethers.parseEther("20"),
-      });
+      }); */
 
-      console.log(st.target);
+      await st.createOrder(
+        "Or2",
+        ethers.parseEther("20"),
+        t3,
+        t4,
+        60,
+        user1.address,
+        {
+          value: ethers.parseEther("20"),
+        }
+      );
 
+      console.log(await ethers.provider.getBalance(st.target));
+
+      await st.payOrder();
+
+      await sleep(70000);
+
+      await st.payOrder();
+
+      //console.log(st.target);
       console.log(await ethers.provider.getBalance(st.target));
     });
   });

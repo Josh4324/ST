@@ -23,14 +23,14 @@
 
 pragma solidity ^0.8.19;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
+import "hardhat/console.sol";
 
 /**
  * @title A Standing Order Contract
  * @author Joshua Adesanya
  * @notice This contract is for creating a standing order to automatate sending crypto to other addresses .
  */
-contract ST is AutomationCompatibleInterface {
+contract ST {
     // Errors
     error Order__NotOwner();
 
@@ -42,6 +42,7 @@ contract ST is AutomationCompatibleInterface {
         string name;
         uint256 dofp;
         uint256 dolp;
+        uint256 lastp;
         uint256 interval;
         uint256 amount;
         address recipient;
@@ -81,7 +82,7 @@ contract ST is AutomationCompatibleInterface {
         uint256 interval,
         address recipient
     ) external payable {
-        idToOrder[odcount] = Order(odcount, name, dofp, dolp, interval, amount, recipient, false, msg.sender);
+        idToOrder[odcount] = Order(odcount, name, dofp, dolp, 0, interval, amount, recipient, false, msg.sender);
         emit orderCreated(odcount, name);
         odcount++;
     }
@@ -90,19 +91,30 @@ contract ST is AutomationCompatibleInterface {
 
     function cancelOrder() public {}
 
-    function checkUpkeep(bytes memory /* checkData */ )
-        public
-        view
-        override
-        returns (bool upkeepNeeded, bytes memory /* performData */ )
-    {
-        return (upkeepNeeded, "0x0"); // can we comment this out?
+    // start payment with dofp - Done
+    // check interval
+    // check order status
+    // check day of last payment
+
+    function payOrder() public {
+        for (uint256 i = 0; i < odcount; i++) {
+            if (idToOrder[i].status == false && block.timestamp <= idToOrder[i].dolp) {
+                if (idToOrder[i].dofp <= block.timestamp && idToOrder[i].lastp == 0) {
+                    // stop action
+                    idToOrder[i].lastp = block.timestamp;
+                    (bool success,) = (idToOrder[i].recipient).call{value: idToOrder[i].amount}("");
+                    require(success, "Failed to send funds");
+                } else if (
+                    idToOrder[i].dofp < block.timestamp && idToOrder[i].lastp > 0
+                        && (block.timestamp - idToOrder[i].lastp) >= idToOrder[i].interval
+                ) {
+                    idToOrder[i].lastp = block.timestamp;
+                }
+            }
+        }
     }
 
-    function performUpkeep(bytes calldata /* performData */ ) external override {
-        (bool upkeepNeeded,) = checkUpkeep("");
-        // require(upkeepNeeded, "Upkeep not needed");
-    }
+    function runOrder() public {}
 
     // Function to receive Ether. msg.data must be empty
     receive() external payable {}
