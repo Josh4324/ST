@@ -24,12 +24,11 @@ describe("ST", function () {
   describe("ST", function () {
     it("Test 1", async function () {
       const { st, user1 } = await loadFixture(deploy);
-      const t1 = (await time.latest()) + 1 * 24 * 60 * 60;
-      const t2 = (await time.latest()) + 10 * 24 * 60 * 60;
+      const t1 = 1 * 24 * 60 * 60;
+      const t2 = 10 * 24 * 60 * 60;
 
-      const t3 = await time.latest();
-      const t4 = (await time.latest()) + 10 * 24 * 60 * 60;
-      const it = 1 * 60;
+      const t3 = 1;
+      const t4 = 10 * 24 * 60 * 60;
 
       function sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -42,9 +41,10 @@ describe("ST", function () {
       await st.createOrder(
         "Or2",
         ethers.parseEther("20"),
+        ethers.parseEther("10"),
         t3,
         t4,
-        60,
+        20,
         user1.address,
         {
           value: ethers.parseEther("20"),
@@ -52,9 +52,11 @@ describe("ST", function () {
       );
 
       console.log(await ethers.provider.getBalance(st.target));
-
+      //await st.deleteOrder(0);
       await st.payOrder();
+      await st.editOrder(0, ethers.parseEther("5"), t4, 20);
 
+      //console.log(await st.getOrder(0));
       await sleep(70000);
 
       await st.payOrder();
