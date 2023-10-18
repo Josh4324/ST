@@ -16,7 +16,7 @@ describe("ST", function () {
       await ethers.getSigners();
 
     const ST = await ethers.getContractFactory("ST");
-    const st = await ST.deploy();
+    const st = await ST.deploy(owner.address, owner.address, owner.address);
 
     return { st, owner, user1, user2, user3, user4, user5 };
   }
@@ -34,10 +34,6 @@ describe("ST", function () {
         return new Promise((resolve) => setTimeout(resolve, ms));
       }
 
-      /*  await st.createOrder("Or1", 20, t1, t2, 60, user1.address, {
-        value: ethers.parseEther("20"),
-      }); */
-
       await st.createOrder(
         "Or2",
         ethers.parseEther("20"),
@@ -51,15 +47,41 @@ describe("ST", function () {
         }
       );
 
+      await st.createOrder(
+        "Or1",
+        ethers.parseEther("20"),
+        ethers.parseEther("20"),
+        t1,
+        t2,
+        60,
+        user1.address,
+        {
+          value: ethers.parseEther("20"),
+        }
+      );
+
+      await st.createOrderInterChain(
+        ["name", "destinationChain", "destinationAddress", "symbol"],
+        [ethers.parseEther("20"), ethers.parseEther("5"), t1, t2, 60],
+        user1.address,
+        {
+          value: ethers.parseEther("20"),
+        }
+      );
+
       console.log(await ethers.provider.getBalance(st.target));
       //await st.deleteOrder(0);
-      await st.payOrder();
+      await st.connect(user1).payOrder();
       await st.editOrder(0, ethers.parseEther("5"), t4, 20);
 
       //console.log(await st.getOrder(0));
       await sleep(70000);
 
       await st.payOrder();
+
+      console.log(await st.payList2());
+
+      await st.withdraw();
 
       //console.log(st.target);
       console.log(await ethers.provider.getBalance(st.target));
