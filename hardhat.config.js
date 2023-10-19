@@ -12,6 +12,7 @@ const MUMBAI_API_KEY = process.env.MUMBAI_API_KEY;
 const MUMBAI_API_KEY_URL = process.env.MUMBAI_API_KEY_URL;
 const MUMBAI_PRIVATE_KEY = process.env.MUMBAI_PRIVATE_KEY;
 const SWISS_URL = process.env.SWISS_URL;
+const BSCSCAN = process.env.BSCSCAN;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -20,7 +21,7 @@ module.exports = {
     bsc: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
       chainId: 97,
-      accounts: [PRIVATE_KEY],
+      accounts: [MUMBAI_PRIVATE_KEY],
     },
     rinkeby: {
       url: PRIVATE_API_KEY_URL,
@@ -46,9 +47,9 @@ module.exports = {
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    //apiKey: BSCSCAN,
+    apiKey: BSCSCAN,
     //apiKey: ETHERSCAN,
-    apiKey: MUMBAI_API_KEY,
+    //apiKey: MUMBAI_API_KEY,
   },
   gasReporter: {
     enabled: true,

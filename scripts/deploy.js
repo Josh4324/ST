@@ -8,8 +8,8 @@ const hre = require("hardhat");
 
 async function main() {
   const st = await hre.ethers.deployContract("ST", [
-    "0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
-    "0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B",
+    "0x96bb60aAAec09A0FceB4527b81bbF3Cc0c171393",
+    "0x4D147dCb984e6affEEC47e44293DA442580A3Ec0",
     "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6",
   ]);
 
@@ -25,8 +25,8 @@ async function main() {
   await hre.run("verify:verify", {
     address: st.target,
     constructorArguments: [
-      "0xE16Df59B887e3Caa439E0b29B42bA2e7976FD8b2",
-      "0xBF62ef1486468a6bd26Dd669C06db43dEd5B849B",
+      "0x96bb60aAAec09A0FceB4527b81bbF3Cc0c171393",
+      "0x4D147dCb984e6affEEC47e44293DA442580A3Ec0",
       "0xbE406F0189A0B4cf3A05C286473D23791Dd44Cc6",
     ],
     contract: "contracts/ST.sol:ST",

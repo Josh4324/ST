@@ -200,6 +200,8 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
             IERC20(0x2c852e740B62308c46DD29B982FBb650D063Bd07).transferFrom(msg.sender, address(this), para2[0]),
             "token transfer failed"
         );
+
+        IERC20(0x2c852e740B62308c46DD29B982FBb650D063Bd07).approve(address(gateway), para2[1]);
     }
 
     function editOrder(
@@ -301,10 +303,27 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
                     );
                     hiscount++;
 
-                    sendToMany(
+                    address tokenAddress = gateway.tokenAddresses(idIOrder[i].symbol);
+                    IERC20(tokenAddress).approve(address(gateway), idIOrder[i].order_amount);
+
+                    address[1] memory addressess = [idIOrder[i].recipient];
+
+                    bytes memory payload = abi.encode(addressess);
+
+                    gasService.payNativeGasForContractCallWithToken{value: 900000000000000000}(
+                        address(this),
                         idIOrder[i].destinationChain,
                         idIOrder[i].destinationAddress,
-                        [idIOrder[i].recipient],
+                        payload,
+                        idIOrder[i].symbol,
+                        idIOrder[i].order_amount,
+                        msg.sender
+                    );
+
+                    gateway.callContractWithToken(
+                        idIOrder[i].destinationChain,
+                        idIOrder[i].destinationAddress,
+                        payload,
                         idIOrder[i].symbol,
                         idIOrder[i].order_amount
                     );
@@ -324,10 +343,27 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
                     );
                     hiscount++;
 
-                    sendToMany(
+                    address tokenAddress = gateway.tokenAddresses(idIOrder[i].symbol);
+
+                    IERC20(tokenAddress).approve(address(gateway), idIOrder[i].order_amount);
+
+                    address[1] memory addressess = [idIOrder[i].recipient];
+                    bytes memory payload = abi.encode(addressess);
+
+                    gasService.payNativeGasForContractCallWithToken{value: 900000000000000000}(
+                        address(this),
                         idIOrder[i].destinationChain,
                         idIOrder[i].destinationAddress,
-                        [idIOrder[i].recipient],
+                        payload,
+                        idIOrder[i].symbol,
+                        idIOrder[i].order_amount,
+                        msg.sender
+                    );
+
+                    gateway.callContractWithToken(
+                        idIOrder[i].destinationChain,
+                        idIOrder[i].destinationAddress,
+                        payload,
                         idIOrder[i].symbol,
                         idIOrder[i].order_amount
                     );
@@ -371,7 +407,7 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
         uint256 currentIndex = 0;
         uint256 itemCount = 0;
 
-        for (uint256 i = 0; i < odcount; i++) {
+        for (uint256 i = 0; i < itcount; i++) {
             if (
                 idIOrder[i].status == false && block.timestamp <= idIOrder[i].dolp && idIOrder[i].or_status == false
                     && idIOrder[i].deleted == false && idIOrder[i].amountPaid < idIOrder[i].amount
@@ -382,7 +418,7 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
 
         InterChainOrder[] memory items = new InterChainOrder[](itemCount);
 
-        for (uint256 i = 0; i < odcount; i++) {
+        for (uint256 i = 0; i < itcount; i++) {
             if (
                 idIOrder[i].status == false && block.timestamp <= idIOrder[i].dolp && idIOrder[i].or_status == false
                     && idIOrder[i].deleted == false && idIOrder[i].amountPaid < idIOrder[i].amount
@@ -405,7 +441,7 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
     function checkUpkeep(bytes calldata) external view override returns (bool upkeepNeeded, bytes memory performData) {
         Order[] memory payList1 = payList();
         InterChainOrder[] memory payList21 = payList2();
-        upkeepNeeded = payList1.length > 0 || payList21.length > 0;
+        upkeepNeeded = (payList1.length > 0 || payList21.length > 0);
         performData = abi.encode(payList1);
         return (upkeepNeeded, performData);
     }
@@ -419,27 +455,12 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
         payOrderInterChain();
     }
 
-    function getOrder(uint256 id) public view returns (Order memory) {
+    /*  function getOrder(uint256 id) public view returns (Order memory) {
         return idToOrder[id];
-    }
+    } */
 
-    function sendToMany(
-        string memory destinationChain,
-        string memory destinationAddress,
-        address[1] memory destinationAddresses,
-        string memory symbol,
-        uint256 amount
-    ) public payable {
-        address tokenAddress = gateway.tokenAddresses(symbol);
-        IERC20(tokenAddress).transferFrom(msg.sender, address(this), amount);
-        IERC20(tokenAddress).approve(address(gateway), amount);
-        bytes memory payload = abi.encode(destinationAddresses);
-        if (msg.value > 0) {
-            gasService.payNativeGasForContractCallWithToken{value: msg.value}(
-                address(this), destinationChain, destinationAddress, payload, symbol, amount, msg.sender
-            );
-        }
-        gateway.callContractWithToken(destinationChain, destinationAddress, payload, symbol, amount);
+    function getOrder2(uint256 id) public view returns (InterChainOrder memory) {
+        return idIOrder[id];
     }
 
     function _executeWithToken(
@@ -456,8 +477,6 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
         for (uint256 i = 0; i < recipients.length; i++) {
             IERC20(tokenAddress).transfer(recipients[i], sentAmount);
         }
-
-        emit Executed();
     }
 
     // Function to receive Ether. msg.data must be empty
