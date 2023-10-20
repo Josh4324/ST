@@ -47,9 +47,9 @@ module.exports = {
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: BSCSCAN,
+    //apiKey: BSCSCAN,
     //apiKey: ETHERSCAN,
-    //apiKey: MUMBAI_API_KEY,
+    apiKey: MUMBAI_API_KEY,
   },
   gasReporter: {
     enabled: true,

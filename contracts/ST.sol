@@ -306,11 +306,9 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
                     address tokenAddress = gateway.tokenAddresses(idIOrder[i].symbol);
                     IERC20(tokenAddress).approve(address(gateway), idIOrder[i].order_amount);
 
-                    address[1] memory addressess = [idIOrder[i].recipient];
+                    bytes memory payload = abi.encode(idIOrder[i].recipient);
 
-                    bytes memory payload = abi.encode(addressess);
-
-                    gasService.payNativeGasForContractCallWithToken{value: 900000000000000000}(
+                    gasService.payNativeGasForContractCallWithToken{value: 300000000000000000}(
                         address(this),
                         idIOrder[i].destinationChain,
                         idIOrder[i].destinationAddress,
@@ -347,10 +345,9 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
 
                     IERC20(tokenAddress).approve(address(gateway), idIOrder[i].order_amount);
 
-                    address[1] memory addressess = [idIOrder[i].recipient];
-                    bytes memory payload = abi.encode(addressess);
+                    bytes memory payload = abi.encode(idIOrder[i].recipient);
 
-                    gasService.payNativeGasForContractCallWithToken{value: 900000000000000000}(
+                    gasService.payNativeGasForContractCallWithToken{value: 300000000000000000}(
                         address(this),
                         idIOrder[i].destinationChain,
                         idIOrder[i].destinationAddress,
@@ -470,13 +467,10 @@ contract ST is AutomationCompatibleInterface, AxelarExecutable {
         string calldata tokenSymbol,
         uint256 amount
     ) internal override {
-        address[] memory recipients = abi.decode(payload, (address[]));
+        address recipient = abi.decode(payload, (address));
         address tokenAddress = gateway.tokenAddresses(tokenSymbol);
 
-        uint256 sentAmount = amount / recipients.length;
-        for (uint256 i = 0; i < recipients.length; i++) {
-            IERC20(tokenAddress).transfer(recipients[i], sentAmount);
-        }
+        IERC20(tokenAddress).transfer(recipient, amount);
     }
 
     // Function to receive Ether. msg.data must be empty

@@ -15,8 +15,8 @@ describe("ST", function () {
     const [owner, user1, user2, user3, user4, user5] =
       await ethers.getSigners();
 
-    const ST = await ethers.getContractFactory("ST");
-    const st = await ST.deploy(owner.address, owner.address, owner.address);
+    const ST = await ethers.getContractFactory("ST1");
+    const st = await ST.deploy(owner.address);
 
     return { st, owner, user1, user2, user3, user4, user5 };
   }
@@ -60,14 +60,14 @@ describe("ST", function () {
         }
       );
 
-      await st.createOrderInterChain(
+      /*  await st.createOrderInterChain(
         ["name", "destinationChain", "destinationAddress", "symbol"],
         [ethers.parseEther("20"), ethers.parseEther("5"), t1, t2, 60],
         user1.address,
         {
           value: ethers.parseEther("20"),
         }
-      );
+      ); */
 
       console.log(await ethers.provider.getBalance(st.target));
       //await st.deleteOrder(0);
@@ -79,7 +79,7 @@ describe("ST", function () {
 
       await st.payOrder();
 
-      console.log(await st.payList2());
+      /* console.log(await st.payList2()); */
 
       await st.withdraw();
 
