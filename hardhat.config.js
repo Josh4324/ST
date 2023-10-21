@@ -35,6 +35,11 @@ module.exports = {
       url: GOERLI_API_KEY_URL,
       accounts: [GOERLI_PRIVATE_KEY],
     },
+    avax: {
+      url: "https://avalanche-fuji-c-chain.publicnode.com",
+      chainId: 43113,
+      accounts: [MUMBAI_PRIVATE_KEY],
+    },
     mumbai: {
       url: MUMBAI_API_KEY_URL,
       accounts: [MUMBAI_PRIVATE_KEY],
@@ -49,7 +54,10 @@ module.exports = {
     // Obtain one at https://etherscan.io/
     //apiKey: BSCSCAN,
     //apiKey: ETHERSCAN,
-    apiKey: MUMBAI_API_KEY,
+    //apiKey: MUMBAI_API_KEY,
+    apiKey: {
+      avalancheFujiTestnet: "9VYT6UA2RWD6AB71JI3P4SWGV3DKXB3J6Y",
+    },
   },
   gasReporter: {
     enabled: true,

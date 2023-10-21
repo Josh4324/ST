@@ -198,7 +198,7 @@ contract ST1 is AutomationCompatibleInterface {
      *  
      */
     function pauseOrder(uint256[] calldata ids) public {
-        for (uint256 i = 0; i < odcount; i++) {
+        for (uint256 i = 0; i < ids.length; i++) {
             if (idToOrder[ids[i]].owner != msg.sender) {
                 revert Order__NotOwner();
             }
@@ -213,7 +213,7 @@ contract ST1 is AutomationCompatibleInterface {
      *  
      */
     function startOrder(uint256[] calldata ids) public {
-        for (uint256 i = 0; i < odcount; i++) {
+        for (uint256 i = 0; i < ids.length; i++) {
             if (idToOrder[ids[i]].owner != msg.sender) {
                 revert Order__NotOwner();
             }
@@ -348,16 +348,75 @@ contract ST1 is AutomationCompatibleInterface {
         return idToOrder[id];
     }
 
+    function getOrders(address addr) public view returns (Order[] memory) {
+        uint256 currentIndex = 0;
+        uint256 itemCount = 0;
+
+        for (uint256 i = 0; i < odcount; i++) {
+            if (idToOrder[i].deleted == false && idToOrder[i].owner == addr) {
+                itemCount += 1;
+            }
+        }
+
+        Order[] memory items = new Order[](itemCount);
+
+        for (uint256 i = 0; i < odcount; i++) {
+            if (idToOrder[i].deleted == false && idToOrder[i].owner == addr) {
+                uint256 currentId = i;
+
+                Order storage currentItem = idToOrder[currentId];
+                items[currentIndex] = currentItem;
+
+                currentIndex += 1;
+            }
+        }
+
+        uint256 length = items.length;
+        Order[] memory reversedArray = new Order[](length);
+
+        for (uint256 i = 0; i < length; i++) {
+            reversedArray[i] = items[length - 1 - i];
+        }
+        return reversedArray;
+    }
+
+    function getTransactions(address addr) public view returns (History[] memory) {
+        uint256 currentIndex = 0;
+        uint256 itemCount = 0;
+
+        for (uint256 i = 0; i < hiscount; i++) {
+            if (idToHistory[i].owner == addr) {
+                itemCount += 1;
+            }
+        }
+
+        History[] memory items = new History[](itemCount);
+
+        for (uint256 i = 0; i < hiscount; i++) {
+            if (idToHistory[i].owner == addr) {
+                uint256 currentId = i;
+
+                History storage currentItem = idToHistory[currentId];
+                items[currentIndex] = currentItem;
+
+                currentIndex += 1;
+            }
+        }
+
+        uint256 length = items.length;
+        History[] memory reversedArray = new History[](length);
+
+        for (uint256 i = 0; i < length; i++) {
+            reversedArray[i] = items[length - 1 - i];
+        }
+        return reversedArray;
+    }
+
     // Function to receive Ether. msg.data must be empty
     receive() external payable {}
 
     // Fallback function is called when msg.data is not empty
     fallback() external payable {}
-
-    function withdraw() public {
-        (bool success,) = (owner).call{value: address(this).balance}("");
-        require(success, "Failed to send funds");
-    }
 
     // Public Functions
 
