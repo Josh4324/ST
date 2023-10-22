@@ -74,5 +74,3 @@ Polygon - https://automation.chain.link/mumbai/899617266185537800925554451146602
 ## Project Screen Shot(s)
 
 ![Image](https://res.cloudinary.com/josh4324/image/upload/v1697974839/cover_umzx99.png)
-
-## Installation and Setup Instructions
