@@ -56,6 +56,21 @@ BNB Chain - Avalanche - https://testnet.axelarscan.io/gmp/0x41a09e4dc9e7b326c8e0
 BNB Chain - Polygon - https://testnet.axelarscan.io/gmp/0xe7b86e6200fa2276a9289edf30f681f193dab5bf193a8f44dbbd675fe5c2368c:8
 <br/>
 
+### Chainlink Automation
+
+Avalanche - https://automation.chain.link/fuji/13162143951193454363778087220000740523150096299377541373821625971506103993372
+<br/>
+Avalanche - https://automation.chain.link/fuji/6144161843303417296317248916869176546301500798973227454937502971014739401417
+<br/>
+BSC - https://automation.chain.link/bnb-chain-testnet/108891445094025224755742954517988685024551276193247701233359121476794876166500
+<br/>
+BSC - https://automation.chain.link/bnb-chain-testnet/6194577563649762337197991512423250257100906860587808526973605309553896312339
+<br/>
+Polygon - https://automation.chain.link/mumbai/89961726618553780092555445114660292964529863604873768980245999640268910205460
+<br/>
+Polygon - https://automation.chain.link/mumbai/89961726618553780092555445114660292964529863604873768980245999640268910205460
+<br/>
+
 ## Project Screen Shot(s)
 
 ![Image](https://res.cloudinary.com/josh4324/image/upload/v1697974839/cover_umzx99.png)
