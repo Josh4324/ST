@@ -56,6 +56,11 @@ BNB Chain - Avalanche - https://testnet.axelarscan.io/gmp/0x41a09e4dc9e7b326c8e0
 BNB Chain - Polygon - https://testnet.axelarscan.io/gmp/0xe7b86e6200fa2276a9289edf30f681f193dab5bf193a8f44dbbd675fe5c2368c:8
 <br/>
 
+### Experience with Axelar
+
+1. I had issues integrating the axelar GMP, the examples did not really help because of my implementation but i was able to figure it out <br/>
+2. The documentation is very comprehensive and it is helped to provide the needed background information.<br/>
+
 ### Chainlink Automation
 
 Avalanche - https://automation.chain.link/fuji/13162143951193454363778087220000740523150096299377541373821625971506103993372
